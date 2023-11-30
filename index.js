@@ -49,6 +49,26 @@ async function run() {
       res.send(user);
     });
 
+    // Update a Specific Data
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = req.body;
+    //   console.log(id, user);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUser = {
+        $set: {
+          isVerified: user.isVerified,
+        },
+      };
+      const result = await userCollections.updateOne(
+        filter,
+        updatedUser,
+        options
+      );
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
