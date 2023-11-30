@@ -27,11 +27,17 @@ async function run() {
 
     const database = client.db("WebSolutionsDb");
     const userCollections = database.collection("users");
-    
+
     // users api
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollections.insertOne(user);
+      res.send(result);
+    });
+    // Read Data
+    app.get("/users", async (req, res) => {
+      const cursor = userCollections.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
