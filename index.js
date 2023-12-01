@@ -29,10 +29,18 @@ async function run() {
     const userCollections = database.collection("users");
     const workSheetCollections = database.collection("workSheet");
     const servicesCollections = database.collection("Services");
+    const testimonialsCollections = database.collection("testimonials");
 
     // Services api
     app.get("/services", async (req, res) => {
       const cursor = servicesCollections.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // testimonials api
+    app.get("/testimionials", async (req, res) => {
+      const cursor = testimonialsCollections.find();
       const result = await cursor.toArray();
       res.send(result);
     });
