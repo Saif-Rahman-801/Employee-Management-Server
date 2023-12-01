@@ -60,6 +60,7 @@ async function run() {
       const updatedUser = {
         $set: {
           isVerified: user.isVerified,
+         
         },
       };
       const result = await userCollections.updateOne(
@@ -76,6 +77,27 @@ async function run() {
         const result = await userCollections.deleteOne(query);
         res.send(result);
      });
+
+    //  Make hr
+    app.put("/hr/:id", async (req, res) => {
+        const id = req.params.id;
+        const user = req.body;
+        console.log(id, user);
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updatedUser = {
+          $set: {
+            role: user.role,
+            isVerified: user.isVerified,
+          },
+        };
+        const result = await userCollections.updateOne(
+          filter,
+          updatedUser,
+          options
+        );
+        res.send(result);
+      });
 
     // Worksheet related API
     app.post("/worksheet", async (req, res) => {
