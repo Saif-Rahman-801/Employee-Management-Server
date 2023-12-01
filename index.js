@@ -28,6 +28,14 @@ async function run() {
     const database = client.db("WebSolutionsDb");
     const userCollections = database.collection("users");
     const workSheetCollections = database.collection("workSheet");
+    const servicesCollections = database.collection("Services");
+
+    // Services api
+    app.get("/services", async (req, res) => {
+      const cursor = servicesCollections.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // users api
     app.post("/users", async (req, res) => {
@@ -60,7 +68,6 @@ async function run() {
       const updatedUser = {
         $set: {
           isVerified: user.isVerified,
-         
         },
       };
       const result = await userCollections.updateOne(
@@ -72,32 +79,32 @@ async function run() {
     });
 
     app.delete("/users/:id", async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const result = await userCollections.deleteOne(query);
-        res.send(result);
-     });
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollections.deleteOne(query);
+      res.send(result);
+    });
 
     //  Make hr
     app.put("/hr/:id", async (req, res) => {
-        const id = req.params.id;
-        const user = req.body;
-        console.log(id, user);
-        const filter = { _id: new ObjectId(id) };
-        const options = { upsert: true };
-        const updatedUser = {
-          $set: {
-            role: user.role,
-            isVerified: user.isVerified,
-          },
-        };
-        const result = await userCollections.updateOne(
-          filter,
-          updatedUser,
-          options
-        );
-        res.send(result);
-      });
+      const id = req.params.id;
+      const user = req.body;
+      console.log(id, user);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUser = {
+        $set: {
+          role: user.role,
+          isVerified: user.isVerified,
+        },
+      };
+      const result = await userCollections.updateOne(
+        filter,
+        updatedUser,
+        options
+      );
+      res.send(result);
+    });
 
     // Worksheet related API
     app.post("/worksheet", async (req, res) => {
@@ -113,22 +120,22 @@ async function run() {
     });
 
     app.get("/worksheets", async (req, res) => {
-        try {
-          const { email } = req.query;  
-      
-          if (!email) {
-            return res.status(400).send("Email parameter is required");
-          }
-      
-          // Find worksheets based on the provided email
-          const worksheets = await workSheetCollections.find({ email }).toArray();
-      
-          res.send(worksheets);
-        } catch (error) {
-          console.error("Error retrieving worksheets:", error);
-          res.status(500).send("Internal Server Error");
+      try {
+        const { email } = req.query;
+
+        if (!email) {
+          return res.status(400).send("Email parameter is required");
         }
-      });
+
+        // Find worksheets based on the provided email
+        const worksheets = await workSheetCollections.find({ email }).toArray();
+
+        res.send(worksheets);
+      } catch (error) {
+        console.error("Error retrieving worksheets:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
