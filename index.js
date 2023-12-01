@@ -27,6 +27,7 @@ async function run() {
 
     const database = client.db("WebSolutionsDb");
     const userCollections = database.collection("users");
+    const workSheetCollections = database.collection("workSheet");
 
     // users api
     app.post("/users", async (req, res) => {
@@ -68,6 +69,20 @@ async function run() {
       );
       res.send(result);
     });
+
+
+    // Worksheet related API
+    app.post("/worksheet", async (req, res) => {
+        const workSheetData = req.body;
+        const result = await workSheetCollections.insertOne(workSheetData);
+        res.send(result);
+      });
+
+      app.get("/worksheet", async (req, res) => {
+        const cursor = workSheetCollections.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
