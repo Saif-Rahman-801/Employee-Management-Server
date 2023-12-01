@@ -83,23 +83,23 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/worksheet", async (req, res) => {
-      try {
-        const { email } = req.query;
-
-        if (!email) {
-          return res.status(400).send("Email parameter is required");
+    app.get("/worksheets", async (req, res) => {
+        try {
+          const { email } = req.query;
+      
+          if (!email) {
+            return res.status(400).send("Email parameter is required");
+          }
+      
+          // Find worksheets based on the provided email
+          const worksheets = await workSheetCollections.find({ email }).toArray();
+      
+          res.send(worksheets);
+        } catch (error) {
+          console.error("Error retrieving worksheets:", error);
+          res.status(500).send("Internal Server Error");
         }
-
-        // Find worksheets based on the provided email
-        const worksheets = await workSheetCollections.find({ email });
-
-        res.send(worksheets);
-      } catch (error) {
-        console.error("Error retrieving worksheets:", error);
-        res.status(500).send("Internal Server Error");
-      }
-    });
+      });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
