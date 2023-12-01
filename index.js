@@ -54,7 +54,7 @@ async function run() {
     app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
       const user = req.body;
-    //   console.log(id, user);
+      //   console.log(id, user);
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updatedUser = {
@@ -70,19 +70,36 @@ async function run() {
       res.send(result);
     });
 
-
     // Worksheet related API
     app.post("/worksheet", async (req, res) => {
-        const workSheetData = req.body;
-        const result = await workSheetCollections.insertOne(workSheetData);
-        res.send(result);
-      });
+      const workSheetData = req.body;
+      const result = await workSheetCollections.insertOne(workSheetData);
+      res.send(result);
+    });
 
-      app.get("/worksheet", async (req, res) => {
-        const cursor = workSheetCollections.find();
-        const result = await cursor.toArray();
-        res.send(result);
-      });
+    app.get("/worksheet", async (req, res) => {
+      const cursor = workSheetCollections.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/worksheet", async (req, res) => {
+      try {
+        const { email } = req.query;
+
+        if (!email) {
+          return res.status(400).send("Email parameter is required");
+        }
+
+        // Find worksheets based on the provided email
+        const worksheets = await workSheetCollections.find({ email });
+
+        res.send(worksheets);
+      } catch (error) {
+        console.error("Error retrieving worksheets:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
