@@ -8,7 +8,10 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin: ["https://employee-management-server-nine.vercel.app"],
+    origin: [
+      "https://employee-management-de63c.web.app",
+      // "http://localhost:5173"
+    ],
   })
 );
 app.use(express.json());
@@ -149,26 +152,25 @@ async function run() {
       }
     });
 
-
     // Fire related api
     app.put("/fire/:id", async (req, res) => {
-        const id = req.params.id;
-        const fired = req.body;
-        // console.log(id, fired);
-        const filter = { _id: new ObjectId(id) };
-        const options = { upsert: true };
-        const updatedUser = {
-          $set: {
-            fired: fired.fired,
-          },
-        };
-        const result = await userCollections.updateOne(
-          filter,
-          updatedUser,
-          options
-        );
-        res.send(result);
-      });
+      const id = req.params.id;
+      const fired = req.body;
+      // console.log(id, fired);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUser = {
+        $set: {
+          fired: fired.fired,
+        },
+      };
+      const result = await userCollections.updateOne(
+        filter,
+        updatedUser,
+        options
+      );
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
