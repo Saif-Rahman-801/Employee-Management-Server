@@ -6,7 +6,11 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://employee-management-server-nine.vercel.app"],
+  })
+);
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.86h0qhu.mongodb.net/?retryWrites=true&w=majority`;
@@ -144,6 +148,27 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     });
+
+
+    // Fire related api
+    app.put("/fire/:id", async (req, res) => {
+        const id = req.params.id;
+        const fired = req.body;
+        // console.log(id, fired);
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updatedUser = {
+          $set: {
+            fired: fired.fired,
+          },
+        };
+        const result = await userCollections.updateOne(
+          filter,
+          updatedUser,
+          options
+        );
+        res.send(result);
+      });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
