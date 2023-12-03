@@ -10,7 +10,7 @@ app.use(
   cors({
     origin: [
       "https://employee-management-de63c.web.app",
-      // "http://localhost:5173"
+      "http://localhost:5173",
     ],
   })
 );
@@ -36,6 +36,7 @@ async function run() {
     const userCollections = database.collection("users");
     const workSheetCollections = database.collection("workSheet");
     const servicesCollections = database.collection("Services");
+    const paymentCollections = database.collection("payments");
     const testimonialsCollections = database.collection("testimonials");
 
     // Services api
@@ -72,6 +73,7 @@ async function run() {
       const user = await userCollections.findOne(query);
       res.send(user);
     });
+    
 
     // Update a Specific Data
     app.put("/users/:id", async (req, res) => {
@@ -169,6 +171,19 @@ async function run() {
         updatedUser,
         options
       );
+      res.send(result);
+    });
+
+    // Payment related api
+    app.post("/payment", async (req, res) => {
+      const paymentDetails = req.body;
+      const result = await paymentCollections.insertOne(paymentDetails);
+      res.send(result);
+    });
+
+    app.get("/payments", async (req, res) => {
+      const cursor = paymentCollections.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
