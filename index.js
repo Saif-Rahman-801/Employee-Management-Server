@@ -9,8 +9,8 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: [
-      "https://employee-management-de63c.web.app",
-      "http://localhost:5173",
+      "https://dulcet-gnome-2e38bc.netlify.app",
+      // "http://localhost:5173",
     ],
   })
 );
